@@ -1,4 +1,4 @@
-package com.frankhaver.snackbar;
+package com.frankhaver.snackerman;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -7,15 +7,16 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 
+// SnackerMan Controller
 public class FXMLController implements Initializable {
     
     @FXML
     private Label label;
     
     @FXML
-    private void handleButtonAction(ActionEvent event) {
-        System.out.println("You clicked me!");
-        label.setText("Dit is de SnackerMan Applicatie");
+    private void sendOrder(ActionEvent event) {
+        System.out.println("Send Order");
+        label.setText("Dit is de SnackerMan App");
     }
     
     @Override
