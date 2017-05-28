@@ -1,4 +1,4 @@
-package com.frankhaver.snackerman;
+package com.frankhaver.snackerman.controllers;
 
 import com.rabbitmq.client.ConnectionFactory;
 import java.io.IOException;
@@ -17,13 +17,31 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.AnchorPane;
 
 // SnackerMan Controller
-public class FXMLController implements Initializable {
+public class SnackerManController extends AnchorPane {
     
     private ConnectionFactory factory;
     private Connection connection;
     private Channel channel;
+    
+    public SnackerManController(){
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
+                "/fxml/SnackerManController.fxml"));
+        fxmlLoader.setRoot(this);
+        fxmlLoader.setController(this);
+
+        try {
+            fxmlLoader.load();
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
+        
+//        this.factory = new ConnectionFactory();
+//        this.factory.setHost("localhost");
+    }
     
     @FXML
     private Label label;
@@ -32,14 +50,7 @@ public class FXMLController implements Initializable {
     private void sendOrder(ActionEvent event) {
         System.out.println("Send Order");
         label.setText("Dit is de SnackerMan App");
-    }
-    
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        this.factory = new ConnectionFactory();
-        this.factory.setHost("localhost");
-        
-    }   
+    } 
     
     public void listenToQueueWithName(String queueName) throws IOException, TimeoutException{
         this.connection = factory.newConnection();

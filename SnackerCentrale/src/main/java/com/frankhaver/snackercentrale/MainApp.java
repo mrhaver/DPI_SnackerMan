@@ -1,9 +1,8 @@
 package com.frankhaver.snackercentrale;
 
+import com.frankhaver.snackercentrale.controllers.CentraleController;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -12,13 +11,10 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
-        
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add("/styles/Styles.css");
-        
-        stage.setTitle("Snacker Centrale");
-        stage.setScene(scene);
+        CentraleController main = new CentraleController();
+
+        stage.setScene(new Scene(main));
+        stage.setTitle("Centrale");
         stage.show();
     }
 

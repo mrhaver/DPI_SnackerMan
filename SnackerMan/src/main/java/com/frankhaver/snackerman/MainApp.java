@@ -1,32 +1,20 @@
 package com.frankhaver.snackerman;
 
+import com.frankhaver.snackerman.controllers.SnackerManController;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
-import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 // SnackerMan
 public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
+        SnackerManController main = new SnackerManController();
 
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add("/styles/Styles.css");
-
-        stage.setTitle("SnackerMan App");
-        stage.setScene(scene);
-        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent we) {
-                System.out.println("Stage is closing");
-            }
-        });
+        stage.setScene(new Scene(main));
+        stage.setTitle("SnackerManController");
         stage.show();
     }
 
