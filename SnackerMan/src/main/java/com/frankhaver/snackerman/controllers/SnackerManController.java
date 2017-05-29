@@ -1,12 +1,8 @@
 package com.frankhaver.snackerman.controllers;
 
-import com.rabbitmq.client.ConnectionFactory;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
+import com.frankhaver.snackermaninterfaces.IMessageReceiver;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.ConnectionFactory;
@@ -68,4 +64,5 @@ public class SnackerManController extends AnchorPane {
         };
         channel.basicConsume(queueName, true, consumer);
     }
+
 }
