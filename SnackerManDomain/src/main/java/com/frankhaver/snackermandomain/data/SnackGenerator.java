@@ -7,6 +7,7 @@ package com.frankhaver.snackermandomain.data;
 
 import com.frankhaver.snackermandomain.model.Snack;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  *
@@ -45,6 +46,7 @@ public class SnackGenerator {
         allSnacks.add(new Snack("Halve haan"));
         allSnacks.add(new Snack("Kipcorn"));
         allSnacks.add(new Snack("Maiskolf"));
+        Collections.sort(allSnacks);
         return allSnacks;
     }
     

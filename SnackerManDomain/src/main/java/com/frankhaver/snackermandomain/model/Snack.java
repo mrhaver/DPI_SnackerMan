@@ -5,11 +5,13 @@
  */
 package com.frankhaver.snackermandomain.model;
 
+import java.util.Comparator;
+
 /**
  *
  * @author Frank Haver
  */
-public class Snack {
+public class Snack implements Comparable<Snack>{
     
     private String name;
     private double price;
@@ -42,6 +44,19 @@ public class Snack {
     public void setPrice(double price) {
         this.price = price;
     }
+    
+    @Override
+    public String toString(){
+        return this.name;
+    }
+
+
+    @Override
+    public int compareTo(Snack s) {
+        return this.getName().compareTo(s.getName());
+    }
+    
+    
     
     
 }

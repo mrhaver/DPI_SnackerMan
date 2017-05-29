@@ -1,29 +1,57 @@
 package com.frankhaver.snackerman.controllers;
 
-import com.frankhaver.snackermaninterfaces.IMessageReceiver;
+import com.frankhaver.snackermandomain.data.SnackGenerator;
+import com.frankhaver.snackermandomain.model.Snack;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Consumer;
-import com.rabbitmq.client.DefaultConsumer;
-import com.rabbitmq.client.Envelope;
 import java.io.IOException;
-import java.util.concurrent.TimeoutException;
+import java.util.ArrayList;
+import java.util.Collections;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.shape.Rectangle;
 
 // SnackerMan Controller
 public class SnackerManController extends AnchorPane {
-    
-    private ConnectionFactory factory;
-    private Connection connection;
-    private Channel channel;
-    
-    public SnackerManController(){
+
+    @FXML
+    private ComboBox cmbChooseProduct;
+    @FXML
+    private ListView lvOrder;
+
+    @FXML
+    private Rectangle rectVisibleOrder;
+
+    @FXML
+    private void onAddProduct(ActionEvent event) {
+        lvOrder.getItems().add(cmbChooseProduct.getSelectionModel().getSelectedItem());
+    }
+
+    @FXML
+    private void onRemoveProduct(ActionEvent event) {
+        Object selectedItem = lvOrder.getSelectionModel().getSelectedItem();
+        if (selectedItem != null) {
+            lvOrder.getItems().remove(selectedItem);
+            return;
+        }
+        System.out.println("no item selected");
+    }
+
+    @FXML
+    private void onSendOrder(ActionEvent event) {
+        this.rectVisibleOrder.setVisible(false);
+    }
+
+    @FXML
+    private void onNewOrder(ActionEvent event) {
+        this.rectVisibleOrder.setVisible(true);
+
+        this.clearOrder();
+    }
+
+    public SnackerManController() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
                 "/fxml/SnackerManController.fxml"));
         fxmlLoader.setRoot(this);
@@ -34,35 +62,26 @@ public class SnackerManController extends AnchorPane {
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
-        
-//        this.factory = new ConnectionFactory();
-//        this.factory.setHost("localhost");
-    }
-    
-    @FXML
-    private Label label;
-    
-    @FXML
-    private void sendOrder(ActionEvent event) {
-        System.out.println("Send Order");
-        label.setText("Dit is de SnackerMan App");
-    } 
-    
-    public void listenToQueueWithName(String queueName) throws IOException, TimeoutException{
-        this.connection = factory.newConnection();
-        this.channel = connection.createChannel();
-        channel.queueDeclare(queueName, false, false, false, null);
-        System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
 
-        Consumer consumer = new DefaultConsumer(channel) {
-            @Override
-            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
-                    throws IOException {
-                String message = new String(body, "UTF-8");
-                System.out.println(" [x] Received '" + message + "'");
-            }
-        };
-        channel.basicConsume(queueName, true, consumer);
+        // fill UI
+        this.fillCombobox();
+    }
+
+    /**
+     * Fill combobox with all snacks
+     */
+    private void fillCombobox() {
+        ArrayList<Snack> allSnacks = SnackGenerator.getInstance().getAllSnacks();  
+        this.cmbChooseProduct.getItems().clear();
+        this.cmbChooseProduct.getItems().addAll(allSnacks);
+        this.cmbChooseProduct.getSelectionModel().select(0);
+    }
+
+    /**
+     * clear list view and order
+     */
+    private void clearOrder() {
+        this.lvOrder.getItems().clear();
     }
 
 }
