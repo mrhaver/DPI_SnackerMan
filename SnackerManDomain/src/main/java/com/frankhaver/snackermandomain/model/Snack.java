@@ -5,13 +5,13 @@
  */
 package com.frankhaver.snackermandomain.model;
 
-import java.util.Comparator;
+import java.io.Serializable;
 
 /**
  *
  * @author Frank Haver
  */
-public class Snack implements Comparable<Snack>{
+public class Snack implements Serializable, Comparable<Snack>{
     
     private String name;
     private double price;

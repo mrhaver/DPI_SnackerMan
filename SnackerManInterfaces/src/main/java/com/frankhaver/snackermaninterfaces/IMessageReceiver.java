@@ -14,7 +14,7 @@ public interface IMessageReceiver {
     
     /**
      * Receive a message listening to a certain destination
-     * @param fromDestination 
+     * @param fromDestination
      */
-    void receiveMessage(String fromDestination);
+    void receiveMessages(String fromDestination);
 }

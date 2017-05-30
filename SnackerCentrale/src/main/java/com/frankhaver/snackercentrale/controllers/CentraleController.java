@@ -1,6 +1,11 @@
 package com.frankhaver.snackercentrale.controllers;
 
+import com.frankhaver.snackercentrale.gateways.SnackerCentraleGateway;
+import com.frankhaver.snackermaninterfaces.utils.ConnectionUtils;
 import java.io.IOException;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,6 +14,8 @@ import javafx.scene.layout.AnchorPane;
 
 public class CentraleController extends AnchorPane {
 
+    private SnackerCentraleGateway centraleGateway;
+    
     @FXML
     private Label label;
 
@@ -22,6 +29,14 @@ public class CentraleController extends AnchorPane {
             fxmlLoader.load();
         } catch (IOException exception) {
             throw new RuntimeException(exception);
+        }
+        
+        try {
+            // create snacker centrale gateway
+            this.centraleGateway = new SnackerCentraleGateway();
+            this.centraleGateway.getReceiver().receiveMessages(ConnectionUtils.QUEUE_NAME_HELLO);
+        } catch (IOException | TimeoutException ex) {
+            Logger.getLogger(CentraleController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

@@ -16,5 +16,5 @@ public interface IMessageSender {
      * @param message
      * @param destination 
      */
-    void sendMessage(String message, String destination);
+    void sendMessage(Object object, String destination);
 }
