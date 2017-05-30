@@ -13,7 +13,7 @@ public interface IMessageSender {
     
     /**
      * Send a message to a certain destination
-     * @param message
+     * @param object
      * @param destination 
      */
     void sendMessage(Object object, String destination);

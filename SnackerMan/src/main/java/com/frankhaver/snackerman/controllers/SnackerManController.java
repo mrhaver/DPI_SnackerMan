@@ -13,6 +13,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
+import org.json.simple.JSONArray;
 
 // SnackerMan Controller
 public class SnackerManController extends AnchorPane {
@@ -47,11 +48,7 @@ public class SnackerManController extends AnchorPane {
         this.rectVisibleOrder.setVisible(false);
         
         // send order to centrale
-        ArrayList<String> temp = new ArrayList<>();
-        temp.add("a");
-        temp.add("a");
-        temp.add("a");
-        this.snackerManGateway.getSender().sendMessage(temp, ConnectionUtils.QUEUE_NAME_HELLO);
+        this.snackerManGateway.getSender().sendMessage(new Snack("bamihapje").toJSON(), ConnectionUtils.QUEUE_NAME_HELLO);
     }
 
     @FXML

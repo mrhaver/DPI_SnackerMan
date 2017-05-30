@@ -14,7 +14,7 @@ public class MainApp extends Application {
         SnackerManController main = new SnackerManController();
 
         stage.setScene(new Scene(main));
-        stage.setTitle("SnackerManController");
+        stage.setTitle("Snacker Man");
         stage.show();
     }
 
