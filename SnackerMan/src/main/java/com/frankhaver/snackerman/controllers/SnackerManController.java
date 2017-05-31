@@ -3,6 +3,7 @@ package com.frankhaver.snackerman.controllers;
 import com.frankhaver.snackerman.gateways.SnackerManGateway;
 import com.frankhaver.snackermandomain.data.SnackGenerator;
 import com.frankhaver.snackermandomain.model.Snack;
+import com.frankhaver.snackermandomain.utils.JSONUtils;
 import com.frankhaver.snackermaninterfaces.utils.ConnectionUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,12 +14,12 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
-import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 // SnackerMan Controller
 public class SnackerManController extends AnchorPane {
 
-    private SnackerManGateway snackerManGateway;
+    private final SnackerManGateway snackerManGateway;
     
     @FXML
     private ComboBox cmbChooseProduct;
@@ -47,8 +48,10 @@ public class SnackerManController extends AnchorPane {
         // show order screen
         this.rectVisibleOrder.setVisible(false);
         
-        // send order to centrale
-        this.snackerManGateway.getSender().sendMessage(new Snack("bamihapje").toJSON(), ConnectionUtils.QUEUE_NAME_HELLO);
+        // send JSONObject order to centrale
+        JSONObject obj = new JSONObject();
+        obj.put(JSONUtils.SNACK, new Snack("bamihapje").toJSON());
+        this.snackerManGateway.getSender().sendMessage(obj, ConnectionUtils.QUEUE_NAME_HELLO);
     }
 
     @FXML

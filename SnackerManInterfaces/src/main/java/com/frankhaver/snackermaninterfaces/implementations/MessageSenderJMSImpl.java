@@ -7,7 +7,6 @@ package com.frankhaver.snackermaninterfaces.implementations;
 
 import com.frankhaver.snackermaninterfaces.IMessageSender;
 import com.frankhaver.snackermaninterfaces.utils.ConnectionUtils;
-import com.frankhaver.snackermaninterfaces.utils.JSONUtils;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -41,9 +40,8 @@ public class MessageSenderJMSImpl implements IMessageSender {
             // declare queue
             channel.queueDeclare(destination, false, false, false, null);
             
-            // create JSONObject to send to queue
-            JSONObject obj = new JSONObject();
-            obj.put(JSONUtils.OBJECT, object);
+            // only send JSON objects with JMS
+            JSONObject obj = (JSONObject) object;
             
             // send message to certain queue
             channel.basicPublish("", destination, null, obj.toJSONString().getBytes());

@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.frankhaver.snackermaninterfaces.utils;
+package com.frankhaver.snackermandomain.utils;
 
 /**
  *
  * @author Frank Haver
  */
 public class JSONUtils {
-    public static final String OBJECT = "object";
+    public static final String SNACK = "snack";
 }

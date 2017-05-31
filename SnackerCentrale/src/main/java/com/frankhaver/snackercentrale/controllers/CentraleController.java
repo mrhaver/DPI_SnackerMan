@@ -8,6 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -45,6 +46,13 @@ public class CentraleController extends AnchorPane {
             @Override
             public void onMessageReceived(byte[] body) {
                 try {
+                    Platform.runLater(new Runnable(){
+                        @Override
+                        public void run() {
+                            label.setText("Dit is de SnackerCentrale");
+                        }
+                    });
+                    
                     String message = new String(body, "UTF-8");
                     JSONObject obj = (JSONObject) parser.parse(message);
                     System.out.println(" [x] Received " + obj.toJSONString());

@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.json.simple.parser.JSONParser;
 
 /**
  *
@@ -30,15 +29,11 @@ public abstract class MessageReceiverJMSImpl implements IMessageReceiver {
     private final Connection connection;
     private final Channel channel;
 
-    private final JSONParser parser;
-
     public MessageReceiverJMSImpl() throws IOException, TimeoutException {
         this.factory = new ConnectionFactory();
         this.factory.setHost(ConnectionUtils.HOST_NAME);
         this.connection = factory.newConnection();
         this.channel = connection.createChannel();
-
-        this.parser = new JSONParser();
     }
 
     @Override

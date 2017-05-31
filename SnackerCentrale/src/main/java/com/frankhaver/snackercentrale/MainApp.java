@@ -11,6 +11,7 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+       
         CentraleController main = new CentraleController();
 
         stage.setScene(new Scene(main));
