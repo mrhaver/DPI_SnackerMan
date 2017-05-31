@@ -14,16 +14,25 @@ import java.util.concurrent.TimeoutException;
  *
  * @author Frank Haver
  */
-public class SnackerCentraleGateway {
+public abstract class SnackerCentraleGateway {
     
     private final IMessageReceiver receiver;
     
     public SnackerCentraleGateway() throws IOException, TimeoutException{
-        this.receiver = new MessageReceiverJMSImpl();
+        this.receiver = new MessageReceiverJMSImpl(){
+            
+            @Override
+            public void onMessage(byte[] body) {
+                onMessageReceived(body);
+            }
+            
+        };
     }
-
-    public IMessageReceiver getReceiver() {
-        return receiver;
+    
+    public abstract void onMessageReceived(byte[] body);
+    
+    public MessageReceiverJMSImpl getReceiver(){
+        return (MessageReceiverJMSImpl) this.receiver;
     }
 
 }

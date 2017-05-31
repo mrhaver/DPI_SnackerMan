@@ -17,4 +17,10 @@ public interface IMessageReceiver {
      * @param fromDestination
      */
     void receiveMessages(String fromDestination);
+    
+    /**
+     * callback function to react on messages
+     * @param body 
+     */
+    abstract void onMessage(byte[] body);
 }

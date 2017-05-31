@@ -18,20 +18,18 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 /**
  *
  * @author Frank Haver
  */
-public class MessageReceiverJMSImpl implements IMessageReceiver {
+public abstract class MessageReceiverJMSImpl implements IMessageReceiver {
 
     private final ConnectionFactory factory;
     private final Connection connection;
     private final Channel channel;
-    
+
     private final JSONParser parser;
 
     public MessageReceiverJMSImpl() throws IOException, TimeoutException {
@@ -39,7 +37,7 @@ public class MessageReceiverJMSImpl implements IMessageReceiver {
         this.factory.setHost(ConnectionUtils.HOST_NAME);
         this.connection = factory.newConnection();
         this.channel = connection.createChannel();
-        
+
         this.parser = new JSONParser();
     }
 
@@ -52,23 +50,19 @@ public class MessageReceiverJMSImpl implements IMessageReceiver {
 
             Consumer consumer = new DefaultConsumer(channel) {
                 @Override
-                public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
-                        throws IOException {
-                    try {
-                        String message = new String(body, "UTF-8");
-                        JSONObject obj = (JSONObject) parser.parse(message);
-                        System.out.println(" [x] Received " + obj.toJSONString());
-                    } catch (ParseException ex) {
-                        Logger.getLogger(MessageReceiverJMSImpl.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
+                    onMessage(body);
                 }
             };
-            
+
             channel.basicConsume(fromDestination, true, consumer);
 
         } catch (IOException ex) {
             Logger.getLogger(MessageReceiverJMSImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    @Override
+    public abstract void onMessage(byte[] body);
 
 }
