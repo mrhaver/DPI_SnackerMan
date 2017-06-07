@@ -5,6 +5,7 @@ import com.frankhaver.snackbar.controllers.SnackbarController;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,7 +26,7 @@ public class MainApp extends Application {
         // if amount of snackbars is 1 create first in this function
         int amountOfSnackbars = MainApp.getAmountOfSnackbars();
         if (amountOfSnackbars < 1) {
-            MainApp.runApp(MainApp.class, "Braadspit");
+            MainApp.runApp(MainApp.class);
         }
 
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -64,11 +65,11 @@ public class MainApp extends Application {
      * run a new instance of the snackbar app
      *
      * @param anotherAppClass
-     * @param snackbarName
      * @throws Exception
      */
-    public static void runApp(Class<? extends Application> anotherAppClass, String snackbarName) throws Exception {
+    public static void runApp(Class<? extends Application> anotherAppClass) throws Exception {
 
+        String snackbarName = getNewSnackbarName();
         MainApp.setAmountOfSnackbars(MainApp.getAmountOfSnackbars() + 1);
 
         Application app2 = anotherAppClass.newInstance();
@@ -92,17 +93,29 @@ public class MainApp extends Application {
         }
 
         int amount = Integer.parseInt(snackbars);
-        System.out.println("get amount of snackbars " + amount);
+//        System.out.println("get amount of snackbars " + amount);
         return amount;
     }
 
     private static void setAmountOfSnackbars(int amount) throws IOException {
-        System.out.println("set amount of snackbars " + amount);
+//        System.out.println("set amount of snackbars " + amount);
         Properties props = new Properties();
         props.setProperty(PropertyUtils.AMOUNT_OF_SNACKBARS, String.valueOf(amount));
-        FileOutputStream out = new FileOutputStream(PropertyUtils.SNACKBAR_FILE_NAME);
-        props.store(out, null);
-        out.close();
+        try (FileOutputStream out = new FileOutputStream(PropertyUtils.SNACKBAR_FILE_NAME)) {
+            props.store(out, null);
+        }
+    }
+    
+    private static String getNewSnackbarName() throws IOException{
+        int amountOfSnackbars = getAmountOfSnackbars();
+        ArrayList<String> allSnackbarNames = PropertyUtils.getAllSnackbars();
+        if(amountOfSnackbars < allSnackbarNames.size()){
+            return allSnackbarNames.get(amountOfSnackbars);
+        }
+        else{
+            System.out.println("no new snackbar available");
+            return "";
+        }
     }
 
 }

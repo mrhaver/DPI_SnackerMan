@@ -2,18 +2,13 @@ package com.frankhaver.snackbar.controllers;
 
 import com.frankhaver.snackbar.MainApp;
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
 
 public class SnackbarController extends AnchorPane {
     
@@ -26,7 +21,7 @@ public class SnackbarController extends AnchorPane {
     private void handleButtonAction(ActionEvent event) {
         try {
             System.out.println(this.snackbarName + ": run another app");
-            MainApp.runApp(MainApp.class, "jopieee");
+            MainApp.runApp(MainApp.class);
         } catch (Exception ex) {
             Logger.getLogger(SnackbarController.class.getName()).log(Level.SEVERE, null, ex);
         }
