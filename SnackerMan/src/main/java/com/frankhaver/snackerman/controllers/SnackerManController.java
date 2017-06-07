@@ -3,7 +3,7 @@ package com.frankhaver.snackerman.controllers;
 import com.frankhaver.snackerman.gateways.SnackerManGateway;
 import com.frankhaver.snackermandomain.data.SnackGenerator;
 import com.frankhaver.snackermandomain.model.Snack;
-import com.frankhaver.snackermandomain.utils.JSONUtils;
+import com.frankhaver.snackermaninterfaces.utils.JSONUtils;
 import com.frankhaver.snackermaninterfaces.utils.ConnectionUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -48,9 +48,9 @@ public class SnackerManController extends AnchorPane {
         // show order screen
         this.rectVisibleOrder.setVisible(false);
         
-        // send JSONObject order to centrale
+        // send ordered snacks to centrale
         JSONObject obj = new JSONObject();
-        obj.put(JSONUtils.SNACK, new Snack("bamihapje").toJSON());
+        obj.put(JSONUtils.SNACK, new Snack("frikandelletje").toJSON()); // Snack.toJSONArray(this.getOrderedSnacks())
         this.snackerManGateway.getSender().sendMessage(obj, ConnectionUtils.QUEUE_NAME_HELLO);
     }
 
@@ -95,6 +95,21 @@ public class SnackerManController extends AnchorPane {
      */
     private void clearOrder() {
         this.lvOrder.getItems().clear();
+    }
+    
+    /**
+     * get all the ordered snacks from lvOrders
+     * @return the ordered snacks
+     */
+    private ArrayList<Snack> getOrderedSnacks(){       
+        ArrayList<Snack> orderedSnacks = new ArrayList<>();
+        
+        for(Object item: lvOrder.getItems()){
+            Snack snackItem = (Snack) item;
+            orderedSnacks.add(snackItem);
+        }
+        
+        return orderedSnacks;
     }
 
 }

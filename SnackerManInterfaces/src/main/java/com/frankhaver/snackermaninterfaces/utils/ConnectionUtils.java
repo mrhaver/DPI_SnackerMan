@@ -10,6 +10,7 @@ package com.frankhaver.snackermaninterfaces.utils;
  * @author Frank Haver
  */
 public class ConnectionUtils {
+    // queue names
     public static final String QUEUE_NAME_HELLO = "hello";
     public static final String HOST_NAME = "localhost";
 }

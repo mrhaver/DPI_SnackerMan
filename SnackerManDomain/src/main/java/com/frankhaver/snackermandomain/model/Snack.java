@@ -54,7 +54,7 @@ public class Snack implements Serializable, Comparable<Snack>{
     
     @Override
     public String toString(){
-        return this.name;
+        return this.name;    
     }
 
     @Override

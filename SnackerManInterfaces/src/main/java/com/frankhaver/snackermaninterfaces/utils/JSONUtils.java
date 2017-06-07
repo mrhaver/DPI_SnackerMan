@@ -3,12 +3,28 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.frankhaver.snackermandomain.utils;
+package com.frankhaver.snackermaninterfaces.utils;
+
+import java.util.Set;
+import org.json.simple.JSONObject;
 
 /**
  *
  * @author Frank Haver
  */
 public class JSONUtils {
+    private static final String KEY_NOT_FOUND = "key_not_found";
+    
     public static final String SNACK = "snack";
+    public static final String SNACK_ORDER = "snack_order";
+    
+    // there could be only 1 key in JSONObject in this application
+    public static final String getFirstJSONKey(JSONObject object){
+        Set jsonKeySet = object.keySet();
+        for(Object o: jsonKeySet){
+            return (String) o;
+        }
+        
+        return KEY_NOT_FOUND;
+    }
 }
