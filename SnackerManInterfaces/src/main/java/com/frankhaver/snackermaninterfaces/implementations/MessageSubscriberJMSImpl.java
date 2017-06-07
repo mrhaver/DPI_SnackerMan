@@ -5,7 +5,7 @@
  */
 package com.frankhaver.snackermaninterfaces.implementations;
 
-import com.frankhaver.snackermaninterfaces.IMessageReceiver;
+import com.frankhaver.snackermaninterfaces.IMessageSubscriber;
 import com.frankhaver.snackermaninterfaces.utils.ConnectionUtils;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
@@ -23,15 +23,16 @@ import java.util.logging.Logger;
  *
  * @author Frank Haver
  */
-public abstract class MessageReceiverJMSImpl implements IMessageReceiver {
+public abstract class MessageSubscriberJMSImpl implements IMessageSubscriber {
 
     private final ConnectionFactory factory;
     private final Connection connection;
     private final Channel channel;
+    
+    private String subscribeQueueName;
+    private String exchangeName;
 
-    private String receiveQueueName;
-
-    public MessageReceiverJMSImpl() throws IOException, TimeoutException {
+    public MessageSubscriberJMSImpl() throws IOException, TimeoutException {
         this.factory = new ConnectionFactory();
         this.factory.setHost(ConnectionUtils.HOST_NAME);
         this.connection = factory.newConnection();
@@ -39,39 +40,42 @@ public abstract class MessageReceiverJMSImpl implements IMessageReceiver {
     }
 
     @Override
-    public void receiveMessages(String fromDestination) {
-
-        this.receiveQueueName = fromDestination;
-
+    public void subscribeForMessages(String onExchange) {
         try {
-            channel.queueDeclare(fromDestination, false, false, false, null);
-            System.out.println(" [*] Waiting for messages on queue " + fromDestination);
+            this.exchangeName = onExchange;
+            
+            channel.exchangeDeclare(onExchange, "fanout");
+            String queueName = channel.queueDeclare().getQueue();
+            this.subscribeQueueName = queueName;
+            channel.queueBind(queueName, onExchange, "");
+
+            System.out.println(" [*] Waiting for messages on exchange " + onExchange);
 
             Consumer consumer = new DefaultConsumer(channel) {
                 @Override
-                public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
-                    onMessage(body);
+                public void handleDelivery(String consumerTag, Envelope envelope,
+                        AMQP.BasicProperties properties, byte[] body) throws IOException {
+                    onPublishedMessage(body);
                 }
             };
 
-            channel.basicConsume(fromDestination, true, consumer);
+            channel.basicConsume(queueName, true, consumer);
 
         } catch (IOException ex) {
-            Logger.getLogger(MessageReceiverJMSImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MessageSubscriberJMSImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
     public void close() {
         try {
-            channel.basicCancel(this.receiveQueueName);
+            channel.queueUnbind(this.subscribeQueueName, this.exchangeName, "");
         } catch (IOException ex) {
-            Logger.getLogger(MessageReceiverJMSImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MessageSubscriberJMSImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     @Override
-    public abstract void onMessage(byte[] body);
+    public abstract void onPublishedMessage(byte[] body);
 
 }

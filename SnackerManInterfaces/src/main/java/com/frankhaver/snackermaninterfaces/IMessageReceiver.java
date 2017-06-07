@@ -19,6 +19,11 @@ public interface IMessageReceiver {
     void receiveMessages(String fromDestination);
     
     /**
+     * stop all services of the receiver
+     */
+    void close();
+    
+    /**
      * callback function to react on messages
      * @param body 
      */

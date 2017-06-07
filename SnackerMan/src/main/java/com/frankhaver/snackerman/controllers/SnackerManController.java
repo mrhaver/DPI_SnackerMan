@@ -112,4 +112,8 @@ public class SnackerManController extends AnchorPane {
         return orderedSnacks;
     }
 
+    public SnackerManGateway getSnackerManGateway() {
+        return snackerManGateway;
+    }
+
 }

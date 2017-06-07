@@ -23,13 +23,21 @@ import org.json.simple.parser.ParseException;
 
 public class CentraleController extends AnchorPane {
 
-    private SnackerCentraleGateway centraleGateway;
+    private final SnackerCentraleGateway centraleGateway;
 
     private final JSONParser parser;
 
     @FXML
     private Label label;
 
+    @FXML
+    private void handleButtonAction(ActionEvent event) {
+        // send ordered snacks to snackbar
+        JSONObject obj = new JSONObject();
+        obj.put(JSONUtils.SNACK, new Snack("frikandelletje").toJSON()); // Snack.toJSONArray(this.getOrderedSnacks())
+        this.centraleGateway.getPublisher().publishMessage(obj, ConnectionUtils.SNACKBAR_ORDERS_EXCHANGE);
+    }
+    
     public CentraleController() throws IOException, TimeoutException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
                 "/fxml/CentraleController.fxml"));
@@ -81,12 +89,6 @@ public class CentraleController extends AnchorPane {
         };
 
         this.centraleGateway.getReceiver().receiveMessages(ConnectionUtils.QUEUE_NAME_HELLO);
-    }
-
-    @FXML
-    private void handleButtonAction(ActionEvent event) {
-        System.out.println("You clicked me!");
-        label.setText("Dit is de SnackerCentrale");
     }
 
 }

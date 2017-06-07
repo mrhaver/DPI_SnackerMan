@@ -4,7 +4,7 @@
 
     <groupId>com.frankhaver</groupId>
     <artifactId>Snackbar</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <name>Snackbar</name>
@@ -18,6 +18,20 @@
         <!-- Used as the 'Vendor' for JNLP generation -->
         <name>Your Organisation</name>
     </organization>
+    
+    <dependencies>
+        <dependency>
+            <groupId>com.frankhaver</groupId>
+            <artifactId>SnackerManInterfaces</artifactId>
+            <version>1.0</version>
+        </dependency>
+        
+         <dependency>
+            <groupId>com.frankhaver</groupId>
+            <artifactId>SnackerManDomain</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
