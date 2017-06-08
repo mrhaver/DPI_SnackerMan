@@ -23,8 +23,9 @@ public class PropertyUtils {
         snackbarNames.add("Jopie");
         snackbarNames.add("Henkie");
         snackbarNames.add("Kees Kroket");
-        snackbarNames.add("KFC");
-        snackbarNames.add("MC Donalds");
+        snackbarNames.add("Den gouden rakker");
+        snackbarNames.add("Erpels");
+        snackbarNames.add("Piepers");
         snackbarNames.add("Piet Friet");
         snackbarNames.add("Peter Patat");
         return snackbarNames;

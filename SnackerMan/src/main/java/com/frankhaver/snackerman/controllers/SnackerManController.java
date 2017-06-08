@@ -21,6 +21,8 @@ public class SnackerManController extends AnchorPane {
 
     private final SnackerManGateway snackerManGateway;
     
+    private final String clientName;
+    
     @FXML
     private ComboBox cmbChooseProduct;
     @FXML
@@ -61,7 +63,7 @@ public class SnackerManController extends AnchorPane {
         this.clearOrder();
     }
 
-    public SnackerManController() {
+    public SnackerManController(String clientName) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
                 "/fxml/SnackerManController.fxml"));
         fxmlLoader.setRoot(this);
@@ -78,6 +80,9 @@ public class SnackerManController extends AnchorPane {
         
         // create snackerman gateway
         this.snackerManGateway = new SnackerManGateway();
+        
+        this.clientName = clientName;
+        System.out.println("Snackerman started with name: " + this.clientName);
     }
 
     /**

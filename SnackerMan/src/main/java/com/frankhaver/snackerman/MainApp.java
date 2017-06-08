@@ -1,9 +1,6 @@
 package com.frankhaver.snackerman;
 
 import com.frankhaver.snackerman.controllers.SnackerManController;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.application.Platform;
@@ -15,9 +12,11 @@ import javafx.stage.WindowEvent;
 // SnackerMan
 public class MainApp extends Application {
 
+    private static String clientName;
+
     @Override
     public void start(Stage stage) throws Exception {
-        SnackerManController main = new SnackerManController();
+        SnackerManController main = new SnackerManController(clientName);
 
         stage.setScene(new Scene(main));
         stage.setTitle("Snacker Man");
@@ -39,8 +38,17 @@ public class MainApp extends Application {
      * support. NetBeans ignores main().
      *
      * @param args the command line arguments
+     *
+     * java -jar SnackerMan-1.0.jar
      */
     public static void main(String[] args) {
+        if (args.length > 0) {
+            clientName = args[0];
+        } 
+        else {
+            clientName = "unknown";
+        }
+
         launch(args);
     }
 

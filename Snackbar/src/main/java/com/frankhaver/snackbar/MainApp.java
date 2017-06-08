@@ -1,14 +1,6 @@
 package com.frankhaver.snackbar;
 
-import com.frankhaver.snackbar.props.PropertyUtils;
 import com.frankhaver.snackbar.controllers.SnackbarController;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.application.Platform;
@@ -21,15 +13,17 @@ import javafx.stage.WindowEvent;
 public class MainApp extends Application {
 
     private SnackbarController snackbarController;
+    
+    private static String snackbarName;
 
     @Override
     public void start(Stage stage) throws Exception {
 
-        String newSnackbarName = PropertyUtils.getRandomSnackbarName();
+        String newSnackbarName = snackbarName;
         snackbarController = new SnackbarController(newSnackbarName);
 
         stage.setScene(new Scene(snackbarController)); 
-        stage.setTitle("Snackbar " + newSnackbarName);
+        stage.setTitle("Snackbar - " + newSnackbarName);
         stage.show();
         
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -51,8 +45,17 @@ public class MainApp extends Application {
      * support. NetBeans ignores main().
      *
      * @param args the command line arguments
+     * 
+     * java -jar Snackbar-1.0.jar
      */
     public static void main(String[] args) {
+        if (args.length > 0) {
+            snackbarName = args[0];
+        } 
+        else {
+            snackbarName = "unknown";
+        }
+        
         launch(args);
     }
 

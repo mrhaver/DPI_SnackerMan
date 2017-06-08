@@ -24,11 +24,12 @@ public class Snack implements Serializable, Comparable<Snack>{
     private double price;
     
     public Snack(){
-        
+        this.price = 0.0d;
     }
     
     public Snack(String name){
         this.name = name;
+        this.price = 0.0d;
     }
     
     public Snack(String name, double price){
@@ -54,7 +55,13 @@ public class Snack implements Serializable, Comparable<Snack>{
     
     @Override
     public String toString(){
-        return this.name;    
+        if(this.price == 0.0d){
+            return this.name;
+        }
+        else{
+            
+        }
+        return this.name + " €" + this.price;
     }
 
     @Override
