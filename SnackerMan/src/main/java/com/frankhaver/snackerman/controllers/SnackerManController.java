@@ -3,6 +3,7 @@ package com.frankhaver.snackerman.controllers;
 import com.frankhaver.snackerman.gateways.SnackerManGateway;
 import com.frankhaver.snackermandomain.data.SnackGenerator;
 import com.frankhaver.snackermandomain.model.Snack;
+import com.frankhaver.snackermandomain.model.SnackerMan;
 import com.frankhaver.snackermaninterfaces.utils.JSONUtils;
 import com.frankhaver.snackermaninterfaces.utils.ConnectionUtils;
 import javafx.event.ActionEvent;
@@ -21,7 +22,7 @@ public class SnackerManController extends AnchorPane {
 
     private final SnackerManGateway snackerManGateway;
     
-    private final String clientName;
+    private final SnackerMan snackerMan;
     
     @FXML
     private ComboBox cmbChooseProduct;
@@ -52,7 +53,8 @@ public class SnackerManController extends AnchorPane {
         
         // send ordered snacks to centrale
         JSONObject obj = new JSONObject();
-        obj.put(JSONUtils.SNACK, new Snack("frikandelletje").toJSON()); // Snack.toJSONArray(this.getOrderedSnacks())
+        obj.put(JSONUtils.SNACKER_MAN, snackerMan.toJSON());
+        obj.put(JSONUtils.SNACK_ORDER, Snack.toJSONArray(this.getOrderedSnacks()));
         this.snackerManGateway.getSender().sendMessage(obj, ConnectionUtils.QUEUE_NAME_HELLO);
     }
 
@@ -81,8 +83,8 @@ public class SnackerManController extends AnchorPane {
         // create snackerman gateway
         this.snackerManGateway = new SnackerManGateway();
         
-        this.clientName = clientName;
-        System.out.println("Snackerman started with name: " + this.clientName);
+        this.snackerMan = new SnackerMan(clientName);
+        System.out.println("Snackerman started with name: " + clientName);
     }
 
     /**

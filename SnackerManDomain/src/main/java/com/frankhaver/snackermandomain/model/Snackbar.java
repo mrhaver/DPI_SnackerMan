@@ -37,5 +37,27 @@ public class Snackbar {
         this.snacks = snacks;
     }
     
+    /**
+     * find the price of a snack for this snackbar and add it to the total price
+     * @param orderedSnacks
+     * @return price of all snacks together
+     */
+    public double calculateOrderPrice(ArrayList<Snack> orderedSnacks){
+        double totalPrice = 0.0d;
+        for(Snack s: orderedSnacks){
+            totalPrice += this.findPriceOfSnack(s);
+        }
+        return totalPrice;
+    }
+    
+    private double findPriceOfSnack(Snack snack){
+        for(Snack s: this.snacks){
+            if(snack.getName().equals(s.getName())){
+                return s.getPrice();
+            }
+        }
+        return 0.0d;
+    }
+    
     
 }

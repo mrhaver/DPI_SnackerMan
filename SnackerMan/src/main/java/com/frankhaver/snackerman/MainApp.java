@@ -19,7 +19,7 @@ public class MainApp extends Application {
         SnackerManController main = new SnackerManController(clientName);
 
         stage.setScene(new Scene(main));
-        stage.setTitle("Snacker Man");
+        stage.setTitle("Snacker Man - " + clientName);
         stage.show();
 
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -39,7 +39,7 @@ public class MainApp extends Application {
      *
      * @param args the command line arguments
      *
-     * java -jar SnackerMan-1.0.jar
+     * java -jar target/SnackerMan-1.0.jar name
      */
     public static void main(String[] args) {
         if (args.length > 0) {

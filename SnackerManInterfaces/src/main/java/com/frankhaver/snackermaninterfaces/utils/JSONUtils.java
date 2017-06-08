@@ -15,6 +15,7 @@ import org.json.simple.JSONObject;
 public class JSONUtils {
     private static final String KEY_NOT_FOUND = "key_not_found";
     
+    public static final String SNACKER_MAN = "snacker_man";
     public static final String SNACK = "snack";
     public static final String SNACK_ORDER = "snack_order";
     

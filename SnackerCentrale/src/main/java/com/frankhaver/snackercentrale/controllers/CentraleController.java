@@ -37,7 +37,7 @@ public class CentraleController extends AnchorPane {
         obj.put(JSONUtils.SNACK, new Snack("frikandelletje").toJSON()); // Snack.toJSONArray(this.getOrderedSnacks())
         this.centraleGateway.getPublisher().publishMessage(obj, ConnectionUtils.SNACKBAR_ORDERS_EXCHANGE);
     }
-    
+
     public CentraleController() throws IOException, TimeoutException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
                 "/fxml/CentraleController.fxml"));
@@ -68,18 +68,18 @@ public class CentraleController extends AnchorPane {
                             System.out.println("snack received");
                             Snack orderedSnack = Snack.fromJSON((JSONObject) obj.get(JSONUtils.SNACK));
                             System.out.println(orderedSnack.toString());
-                            break; // optional
+                            break;
 
                         case JSONUtils.SNACK_ORDER:
-                            System.out.println("snack order received");
-                            ArrayList<Snack> orderedSnacks = Snack.fromJSONArray((JSONArray) obj.get(JSONUtils.SNACK_ORDER));
-                            System.out.println("amount of snacks: " + orderedSnacks.size());
-                            
-                            // TODO: send order to all open snackbars
+                            processSnackOrder(obj);
+                            break;
+                        
+                        case JSONUtils.SNACKER_MAN:
+                            processSnackOrder(obj);
                             break;
 
                         default:
-                        System.out.println("Unknown json key");
+                            System.out.println("Unknown json key");
                     }
 
                 } catch (ParseException | UnsupportedEncodingException ex) {
@@ -89,6 +89,19 @@ public class CentraleController extends AnchorPane {
         };
 
         this.centraleGateway.getReceiver().receiveMessages(ConnectionUtils.QUEUE_NAME_HELLO);
+    }
+
+    /**
+     * dirty fix for multiple json values
+     * @param obj 
+     */
+    public void processSnackOrder(JSONObject obj) {
+        System.out.println("snack order received");
+        ArrayList<Snack> orderedSnacks = Snack.fromJSONArray((JSONArray) obj.get(JSONUtils.SNACK_ORDER));
+        System.out.println("amount of snacks: " + orderedSnacks.size());
+
+        // send order object to snackbars
+        centraleGateway.getPublisher().publishMessage(obj, ConnectionUtils.SNACKBAR_ORDERS_EXCHANGE);
     }
 
 }

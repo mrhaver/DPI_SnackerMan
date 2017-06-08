@@ -46,7 +46,7 @@ public class MainApp extends Application {
      *
      * @param args the command line arguments
      * 
-     * java -jar Snackbar-1.0.jar
+     * java -jar target/Snackbar-1.0.jar name
      */
     public static void main(String[] args) {
         if (args.length > 0) {
