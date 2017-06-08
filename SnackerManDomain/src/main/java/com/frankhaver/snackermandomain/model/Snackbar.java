@@ -44,10 +44,8 @@ public class Snackbar {
      */
     public double calculateOrderPrice(ArrayList<Snack> orderedSnacks){
         double totalPrice = 0.0d;
-        for(Snack s: orderedSnacks){
-            totalPrice += this.findPriceOfSnack(s);
-        }
-        return totalPrice;
+        totalPrice = orderedSnacks.stream().map((s) -> this.findPriceOfSnack(s)).reduce(totalPrice, (accumulator, _item) -> accumulator + _item);
+        return Math.floor(totalPrice*100)/100;
     }
     
     private double findPriceOfSnack(Snack snack){
@@ -57,6 +55,13 @@ public class Snackbar {
             }
         }
         return 0.0d;
+    }
+    
+    public ArrayList<Snack> getPricedSnacks(ArrayList<Snack> snacks){
+        snacks.forEach((s) -> {
+            s.setPrice(this.findPriceOfSnack(s));
+        });
+        return snacks;
     }
     
     

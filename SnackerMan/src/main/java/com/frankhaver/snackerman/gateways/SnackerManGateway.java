@@ -5,7 +5,9 @@
  */
 package com.frankhaver.snackerman.gateways;
 
+import com.frankhaver.snackermaninterfaces.IMessageReceiver;
 import com.frankhaver.snackermaninterfaces.IMessageSender;
+import com.frankhaver.snackermaninterfaces.implementations.MessageReceiverJMSImpl;
 import com.frankhaver.snackermaninterfaces.implementations.MessageSenderJMSImpl;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -16,19 +18,36 @@ import java.util.logging.Logger;
  *
  * @author Frank Haver
  */
-public class SnackerManGateway{
-    
+public abstract class SnackerManGateway {
+
     private IMessageSender sender;
-    
-    public SnackerManGateway(){
+    private IMessageReceiver receiver;
+
+    public SnackerManGateway() {
         try {
             sender = new MessageSenderJMSImpl();
+
+            this.receiver = new MessageReceiverJMSImpl() {
+
+                @Override
+                public void onMessage(byte[] body) {
+                    onMessageReceived(body);
+                }
+
+            };
         } catch (IOException | TimeoutException ex) {
             Logger.getLogger(SnackerManGateway.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
+
+    public abstract void onMessageReceived(byte[] body);
 
     public IMessageSender getSender() {
         return sender;
+    }
+
+    public IMessageReceiver getReceiver() {
+        return receiver;
     }
 }

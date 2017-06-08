@@ -2,12 +2,16 @@ package com.frankhaver.snackercentrale.controllers;
 
 import com.frankhaver.snackercentrale.gateways.SnackerCentraleGateway;
 import com.frankhaver.snackermandomain.model.Snack;
+import com.frankhaver.snackermandomain.model.SnackOrder;
 import com.frankhaver.snackermaninterfaces.implementations.MessageReceiverJMSImpl;
 import com.frankhaver.snackermaninterfaces.utils.ConnectionUtils;
 import com.frankhaver.snackermaninterfaces.utils.JSONUtils;
+import com.frankhaver.snackermaninterfaces.utils.SnackLog;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -70,12 +74,14 @@ public class CentraleController extends AnchorPane {
                             System.out.println(orderedSnack.toString());
                             break;
 
-                        case JSONUtils.SNACK_ORDER:
-                            processSnackOrder(obj);
+                        case JSONUtils.SNACK_ORDER_SNACKBAR:
+                            // send order to all snackbars
+                            centraleGateway.getPublisher().publishMessage(obj, ConnectionUtils.SNACKBAR_ORDERS_EXCHANGE);
                             break;
-                        
-                        case JSONUtils.SNACKER_MAN:
-                            processSnackOrder(obj);
+
+                        case JSONUtils.SNACK_ORDER_CLIENT:
+                            // send cheapest order to certain client
+                            processSnackOrderClient(obj);
                             break;
 
                         default:
@@ -88,20 +94,26 @@ public class CentraleController extends AnchorPane {
             }
         };
 
-        this.centraleGateway.getReceiver().receiveMessages(ConnectionUtils.QUEUE_NAME_HELLO);
+        // listens to client for new orders
+        this.centraleGateway.getReceiver().receiveMessages(ConnectionUtils.CLIENT_SEND_ORDER);
+
+        // listens to snackbars for order prices
+        this.centraleGateway.getReceiver().receiveMessages(ConnectionUtils.SEND_ORDER_PRICE);
     }
 
     /**
-     * dirty fix for multiple json values
-     * @param obj 
+     * send cheapest order to the certain client
      */
-    public void processSnackOrder(JSONObject obj) {
-        System.out.println("snack order received");
-        ArrayList<Snack> orderedSnacks = Snack.fromJSONArray((JSONArray) obj.get(JSONUtils.SNACK_ORDER));
-        System.out.println("amount of snacks: " + orderedSnacks.size());
+    private void processSnackOrderClient(final JSONObject obj) {
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                SnackOrder snackOrder = SnackOrder.fromJSON((JSONObject) obj.get(JSONUtils.SNACK_ORDER_CLIENT));
+                centraleGateway.getSender().sendMessage(obj, ConnectionUtils.SEND_ORDER_PRICE + snackOrder.getClientName());
+            }
+        }, 3000
+        );
 
-        // send order object to snackbars
-        centraleGateway.getPublisher().publishMessage(obj, ConnectionUtils.SNACKBAR_ORDERS_EXCHANGE);
     }
 
 }

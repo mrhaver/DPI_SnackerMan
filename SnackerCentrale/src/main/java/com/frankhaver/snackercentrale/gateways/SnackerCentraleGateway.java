@@ -7,8 +7,10 @@ package com.frankhaver.snackercentrale.gateways;
 
 import com.frankhaver.snackermaninterfaces.IMessagePublisher;
 import com.frankhaver.snackermaninterfaces.IMessageReceiver;
+import com.frankhaver.snackermaninterfaces.IMessageSender;
 import com.frankhaver.snackermaninterfaces.implementations.MessagePublisherJMSImpl;
 import com.frankhaver.snackermaninterfaces.implementations.MessageReceiverJMSImpl;
+import com.frankhaver.snackermaninterfaces.implementations.MessageSenderJMSImpl;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
@@ -18,6 +20,7 @@ import java.util.concurrent.TimeoutException;
  */
 public abstract class SnackerCentraleGateway {
     
+    private final IMessageSender sender;
     private final IMessageReceiver receiver;
     private final IMessagePublisher publisher;
     
@@ -32,15 +35,22 @@ public abstract class SnackerCentraleGateway {
         };
         
         this.publisher = new MessagePublisherJMSImpl();
+        this.sender = new MessageSenderJMSImpl();
     }
     
     public abstract void onMessageReceived(byte[] body);
     
-    public MessageReceiverJMSImpl getReceiver(){
-        return (MessageReceiverJMSImpl) this.receiver;
+    public IMessageReceiver getReceiver(){
+        return this.receiver;
     }
 
-    public MessagePublisherJMSImpl getPublisher() {
-        return (MessagePublisherJMSImpl) this.publisher;
+    public IMessagePublisher getPublisher() {
+        return this.publisher;
     }
+
+    public IMessageSender getSender() {
+        return this.sender;
+    }
+    
+    
 }

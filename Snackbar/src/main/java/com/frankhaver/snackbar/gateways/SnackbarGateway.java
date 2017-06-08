@@ -5,7 +5,9 @@
  */
 package com.frankhaver.snackbar.gateways;
 
+import com.frankhaver.snackermaninterfaces.IMessageSender;
 import com.frankhaver.snackermaninterfaces.IMessageSubscriber;
+import com.frankhaver.snackermaninterfaces.implementations.MessageSenderJMSImpl;
 import com.frankhaver.snackermaninterfaces.implementations.MessageSubscriberJMSImpl;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -16,6 +18,7 @@ import java.util.concurrent.TimeoutException;
  */
 public abstract class SnackbarGateway {
     
+    private final IMessageSender sender;
     private final IMessageSubscriber subscriber;
     
     public SnackbarGateway() throws IOException, TimeoutException{
@@ -25,6 +28,7 @@ public abstract class SnackbarGateway {
                 onSubscribedMessage(body);
             }
         };
+        this.sender = new MessageSenderJMSImpl();
     }
     
     public abstract void onSubscribedMessage(byte[] body);
@@ -32,6 +36,8 @@ public abstract class SnackbarGateway {
     public IMessageSubscriber getSubscriber() {
         return subscriber;
     }
-    
-    
+
+    public IMessageSender getSender() {
+        return sender;
+    }
 }

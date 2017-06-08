@@ -4,6 +4,7 @@ import com.frankhaver.snackbar.gateways.SnackbarGateway;
 import com.frankhaver.snackermandomain.model.Snack;
 import com.frankhaver.snackermandomain.model.Snackbar;
 import com.frankhaver.snackermandomain.model.SnackerMan;
+import com.frankhaver.snackermandomain.model.SnackOrder;
 import com.frankhaver.snackermaninterfaces.implementations.MessageReceiverJMSImpl;
 import com.frankhaver.snackermaninterfaces.utils.ConnectionUtils;
 import com.frankhaver.snackermaninterfaces.utils.JSONUtils;
@@ -72,15 +73,7 @@ public class SnackbarController extends AnchorPane {
                     System.out.println(" [x] Received " + obj.toJSONString());
 
                     switch (JSONUtils.getFirstJSONKey(obj)) {
-                        case JSONUtils.SNACK:
-
-                            break;
-                            
-                        case JSONUtils.SNACK_ORDER:
-                            processSnackOrder(obj);
-                            break;
-
-                        case JSONUtils.SNACKER_MAN:
+                        case JSONUtils.SNACK_ORDER_SNACKBAR:
                             processSnackOrder(obj);
                             break;
 
@@ -99,15 +92,17 @@ public class SnackbarController extends AnchorPane {
     public void processSnackOrder(JSONObject obj) {
         SnackLog.LOG(SnackLog.SNACKBAR, this.snackbarName, "snack order received");
 
-        // read incoming message
-        ArrayList<Snack> orderedSnacks = Snack.fromJSONArray((JSONArray) obj.get(JSONUtils.SNACK_ORDER));
-        SnackerMan snackerMan = SnackerMan.fromJSON((JSONObject) obj.get(JSONUtils.SNACKER_MAN));
+        SnackOrder snackOrder = SnackOrder.fromJSON((JSONObject) obj.get(JSONUtils.SNACK_ORDER_SNACKBAR));
+        snackOrder.setPrice(this.snackbar.calculateOrderPrice(snackOrder.getSnacks()));
+        snackOrder.setSnacks(this.snackbar.getPricedSnacks(snackOrder.getSnacks()));
+        snackOrder.setSnackbarName(this.snackbarName);
+        
+        JSONObject jsonOrder = new JSONObject();
+        jsonOrder.put(JSONUtils.SNACK_ORDER_CLIENT, snackOrder.toJSON());
+        
+        this.addToPriceRequestsOnTop(snackOrder.getClientName(), snackOrder.getPrice());
 
-        SnackLog.LOG(SnackLog.SNACKBAR, this.snackbarName, "amount of snacks: " + orderedSnacks.size());
-
-        double price = snackbar.calculateOrderPrice(orderedSnacks);
-        SnackLog.LOG(SnackLog.SNACKBAR, this.snackbarName, "Price: " + price);
-        addToPriceRequestsOnTop(snackerMan.getName(), price);
+        this.snackbarGateway.getSender().sendMessage(jsonOrder, ConnectionUtils.SEND_ORDER_PRICE);
     }
 
     public SnackbarGateway getSnackbarGateway() {

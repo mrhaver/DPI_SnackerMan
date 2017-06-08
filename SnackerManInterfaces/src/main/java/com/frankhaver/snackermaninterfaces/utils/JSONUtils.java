@@ -18,6 +18,8 @@ public class JSONUtils {
     public static final String SNACKER_MAN = "snacker_man";
     public static final String SNACK = "snack";
     public static final String SNACK_ORDER = "snack_order";
+    public static final String SNACK_ORDER_CLIENT = "snack_order_client";
+    public static final String SNACK_ORDER_SNACKBAR = "snack_order_snackbar";
     
     // there could be only 1 key in JSONObject in this application
     public static final String getFirstJSONKey(JSONObject object){

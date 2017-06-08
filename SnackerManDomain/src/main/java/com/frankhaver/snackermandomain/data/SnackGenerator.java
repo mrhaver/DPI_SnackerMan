@@ -9,7 +9,6 @@ import com.frankhaver.snackermandomain.model.Snack;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
-import static jdk.nashorn.internal.objects.NativeMath.round;
 
 /**
  *
@@ -50,6 +49,7 @@ public class SnackGenerator {
         allSnacks.add(new Snack("Halve haan"));
         allSnacks.add(new Snack("Kipcorn"));
         allSnacks.add(new Snack("Maiskolf"));
+        allSnacks.add(new Snack("Kapsalon"));
         Collections.sort(allSnacks);
         return allSnacks;
     }

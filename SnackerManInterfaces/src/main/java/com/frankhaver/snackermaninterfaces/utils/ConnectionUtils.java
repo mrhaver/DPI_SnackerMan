@@ -14,6 +14,8 @@ public class ConnectionUtils {
     // queue names
     public static final String QUEUE_NAME_HELLO = "hello";
     public static final String HOST_NAME = "localhost";
+    public static final String CLIENT_SEND_ORDER = "client_send_order";
+    public static final String SEND_ORDER_PRICE = "send_order_price";
 
     // exchange names
     public static final String SNACKBAR_ORDERS_EXCHANGE = "snackbar_orders_exchange";
