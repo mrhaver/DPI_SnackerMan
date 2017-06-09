@@ -14,25 +14,29 @@ import org.json.simple.JSONObject;
  * @author Frank Haver
  */
 public class SnackOrder {
-    
+
+    public static final String ID = "id";
     public static final String CLIENT_NAME = "client_name";
     public static final String SNACKBAR_NAME = "snackbar_name";
     public static final String PRICE = "price";
     public static final String SNACKS = "snacks";
-    
+
+    private int id;
     private String clientName;
     private String snackbarName;
     private double price;
     private ArrayList<Snack> snacks;
-    
-    public SnackOrder(){
+
+    public SnackOrder() {
+        this.id = -1;
         this.clientName = "";
         this.snackbarName = "";
         this.price = 0.0d;
         snacks = new ArrayList<>();
     }
-    
-    public SnackOrder(double price, ArrayList<Snack> snacks){
+
+    public SnackOrder(double price, ArrayList<Snack> snacks) {
+        this.id = -1;
         this.clientName = "";
         this.snackbarName = "";
         this.price = price;
@@ -70,50 +74,65 @@ public class SnackOrder {
     public void setSnackbarName(String snackbarName) {
         this.snackbarName = snackbarName;
     }
-    
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     /**
-     * 
+     *
      * @return json object of this SnackOrder object
      */
-    public JSONObject toJSON(){
+    public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
-        
-        obj.put(SnackOrder.PRICE, this.price); 
+
+        obj.put(SnackOrder.ID, String.valueOf(this.id));
+        obj.put(SnackOrder.PRICE, this.price);
         obj.put(SnackOrder.SNACKS, Snack.toJSONArray(this.snacks));
         obj.put(SnackOrder.CLIENT_NAME, this.clientName);
         obj.put(SnackOrder.SNACKBAR_NAME, this.snackbarName);
-        
+
         return obj;
     }
-    
+
     /**
      * get all fields from json object
+     *
      * @param obj
      * @return SnackOrder object from param obj
      */
-    public static SnackOrder fromJSON(JSONObject obj){
+    public static SnackOrder fromJSON(JSONObject obj) {
         SnackOrder snackOrder = new SnackOrder();
+
+        String sId = (String) obj.get(SnackOrder.ID);
+        if(!sId.equals("-1")){
+            snackOrder.id = Integer.valueOf(sId);
+        }
         
         String clientName = (String) obj.get(SnackOrder.CLIENT_NAME);
-        if(!clientName.equals("")){
+        if (!clientName.equals("")) {
             snackOrder.clientName = clientName;
         }
-        
+
         String snackbarName = (String) obj.get(SnackOrder.SNACKBAR_NAME);
-        if(snackbarName != null && !snackbarName.equals("")){
+        if (snackbarName != null && !snackbarName.equals("")) {
             snackOrder.snackbarName = snackbarName;
         }
-        
+
         double orderPrice = (double) obj.get(SnackOrder.PRICE);
-        if(orderPrice != 0.0d){
+        if (orderPrice != 0.0d) {
             snackOrder.price = orderPrice;
         }
-        
+
         ArrayList<Snack> orderSnacks = Snack.fromJSONArray((JSONArray) obj.get(SnackOrder.SNACKS));
-        if(orderSnacks != null){
+        if (orderSnacks != null) {
             snackOrder.snacks = orderSnacks;
         }
-         
+
         return snackOrder;
     }
 }

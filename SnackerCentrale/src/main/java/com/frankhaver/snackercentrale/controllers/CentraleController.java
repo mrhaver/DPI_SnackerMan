@@ -2,6 +2,7 @@ package com.frankhaver.snackercentrale.controllers;
 
 import com.frankhaver.snackercentrale.gateways.SnackerCentraleGateway;
 import com.frankhaver.snackermandomain.model.Snack;
+import com.frankhaver.snackermandomain.model.SnackCentrale;
 import com.frankhaver.snackermandomain.model.SnackOrder;
 import com.frankhaver.snackermaninterfaces.implementations.MessageReceiverJMSImpl;
 import com.frankhaver.snackermaninterfaces.utils.ConnectionUtils;
@@ -20,13 +21,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class CentraleController extends AnchorPane {
 
+    private final SnackCentrale centrale;
+    
     private final SnackerCentraleGateway centraleGateway;
 
     private final JSONParser parser;
@@ -55,6 +57,9 @@ public class CentraleController extends AnchorPane {
         }
 
         this.parser = new JSONParser();
+        
+        // create snackcentrale
+        this.centrale = new SnackCentrale();
 
         // create snacker centrale gateway
         this.centraleGateway = new SnackerCentraleGateway() {
@@ -66,6 +71,7 @@ public class CentraleController extends AnchorPane {
                     String message = new String(body, "UTF-8");
                     JSONObject obj = (JSONObject) parser.parse(message);
                     System.out.println(" [x] Received " + obj.toJSONString());
+                    SnackOrder snackOrder;
 
                     switch (JSONUtils.getFirstJSONKey(obj)) {
                         case JSONUtils.SNACK:
@@ -75,13 +81,32 @@ public class CentraleController extends AnchorPane {
                             break;
 
                         case JSONUtils.SNACK_ORDER_SNACKBAR:
+                            // deserialize set id and save in centrale
+                            snackOrder = SnackOrder.fromJSON((JSONObject) obj.get(JSONUtils.SNACK_ORDER_SNACKBAR));
+                            snackOrder.setId(centrale.getNextSnackOrderId());
+                            
+                            centrale.addSnackerManOrder(snackOrder);
+                            
+                            // serialize and send through
+                            obj.put(JSONUtils.SNACK_ORDER_SNACKBAR, snackOrder.toJSON());
+                            
                             // send order to all snackbars
                             centraleGateway.getPublisher().publishMessage(obj, ConnectionUtils.SNACKBAR_ORDERS_EXCHANGE);
+                            
+                            // start timer to send back to client
+                            
                             break;
 
                         case JSONUtils.SNACK_ORDER_CLIENT:
                             // send cheapest order to certain client
-                            processSnackOrderClient(obj);
+                            snackOrder = SnackOrder.fromJSON((JSONObject) obj.get(JSONUtils.SNACK_ORDER_CLIENT));
+                            
+                            // only if the order is new and id does not yet exist
+                            if(!centrale.respondedSnackOrderExists(snackOrder.getId())){
+                                processSnackOrderClient(snackOrder);
+                            }
+                            
+                            centrale.addRespondedSnackbarOrder(snackOrder);
                             break;
 
                         default:
@@ -104,11 +129,19 @@ public class CentraleController extends AnchorPane {
     /**
      * send cheapest order to the certain client
      */
-    private void processSnackOrderClient(final JSONObject obj) {
+    private void processSnackOrderClient(final SnackOrder snackOrder) {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                SnackOrder snackOrder = SnackOrder.fromJSON((JSONObject) obj.get(JSONUtils.SNACK_ORDER_CLIENT));
+                // after x seconds get snackbar orders with id of param snackOrder.getId()
+                ArrayList<SnackOrder> respondedSnackbarOrders = centrale.getRespondedSnackbarOrders(snackOrder.getId());
+                
+                // calculate the cheapest of the specific snackbar orders
+                SnackOrder cheapestOrder = centrale.calculateCheapestSnackbarOrder(respondedSnackbarOrders);
+                
+                // send message and remove all orders with id snackOrder.getId() in centrale
+                JSONObject obj = new JSONObject();
+                obj.put(JSONUtils.SNACK_ORDER_CLIENT, cheapestOrder.toJSON());
                 centraleGateway.getSender().sendMessage(obj, ConnectionUtils.SEND_ORDER_PRICE + snackOrder.getClientName());
             }
         }, 3000

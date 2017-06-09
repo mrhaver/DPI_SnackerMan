@@ -86,7 +86,6 @@ public class SnackerManController extends AnchorPane {
     private void onNewOrder(ActionEvent event) {
         this.rectVisibleOrder.setVisible(true);
         this.setOrderInProgress(false);
-
         this.clearOrder();
     }
 

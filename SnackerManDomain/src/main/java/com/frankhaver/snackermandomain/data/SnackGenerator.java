@@ -60,9 +60,8 @@ public class SnackGenerator {
      * @return all snacks with price
      */
     public ArrayList<Snack> randomPriceAllSnacks() {
-        
         ArrayList<Snack> randomPricedSnacks = new ArrayList<>();
-        
+
         double rangeMin = 0.80;
         double rangeMax = 3.20;
         this.getAllSnacks().forEach((Snack s) -> {
@@ -73,7 +72,7 @@ public class SnackGenerator {
             s.setPrice(randomValue);
             randomPricedSnacks.add(s);
         });
-        
+
         return randomPricedSnacks;
     }
 }
