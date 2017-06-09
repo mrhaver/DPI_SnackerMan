@@ -36,14 +36,6 @@ public class CentraleController extends AnchorPane {
     @FXML
     private Label label;
 
-    @FXML
-    private void handleButtonAction(ActionEvent event) {
-        // send ordered snacks to snackbar
-        JSONObject obj = new JSONObject();
-        obj.put(JSONUtils.SNACK, new Snack("frikandelletje").toJSON()); // Snack.toJSONArray(this.getOrderedSnacks())
-        this.centraleGateway.getPublisher().publishMessage(obj, ConnectionUtils.SNACKBAR_ORDERS_EXCHANGE);
-    }
-
     public CentraleController() throws IOException, TimeoutException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
                 "/fxml/CentraleController.fxml"));

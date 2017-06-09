@@ -10,8 +10,8 @@
   <children>
     <GridPane layoutX="0.0" layoutY="0.0" prefHeight="199.99990000000253" prefWidth="448.0">
       <children>
-        <Button mnemonicParsing="false" onAction="#handleButtonAction" prefWidth="119.0" text="Send to snackbar" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
         <Label fx:id="label" alignment="CENTER" prefWidth="200.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+        <TextField alignment="CENTER" prefWidth="200.0" text="SNACKCENTRALE" GridPane.columnIndex="1" GridPane.rowIndex="3" />
       </children>
       <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
